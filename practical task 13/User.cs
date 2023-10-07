@@ -1,4 +1,5 @@
-﻿using System;
+﻿using practical_task_13;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,7 +10,22 @@ namespace banking_system_prototype
     public class User : Client<string, string, string>
     {
         public static event Action<string> evenеtRecording;
-        int a = 0;
+        private ulong account;
+
+        public ulong Account
+        {
+            get { return account; }
+
+            set
+            {
+                if ((ulong)Math.Log10(value) + 1 < 16)
+                {
+                    throw new AccountException();
+                }
+                  account = value; 
+                }
+        }
+
 
         public User(ulong deposit = 0, ulong nonDeposit = 0)
         {
@@ -27,18 +43,6 @@ namespace banking_system_prototype
             }
             if (deposit != 0 && deposit1 != 0) evenеtRecording($"Пользователь {lastName} перевел с {deposit} на {deposit1} сумму {sum}");
             if (close) evenеtRecording($"Пользователь {lastName} закрыл счет");
-        }
-        /// <summary>
-        /// Открывает счет
-        /// </summary>
-        /// <returns></returns>
-        public ulong OpenAnAccount()
-        {
-            var r = new Random();                   /*генерируем случайное число типа ulong*/
-            var b = new byte[sizeof(ulong)];
-            r.NextBytes(b);
-            var res = BitConverter.ToUInt64(b, 0);
-            return res;
         }
         /// <summary>
         /// Создает клиентов

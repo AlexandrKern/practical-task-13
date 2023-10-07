@@ -56,12 +56,12 @@
                         <DataGridTextColumn Width="*" Header="Средства" Binding="{Binding moneyNonDeposit }"/>
                     </DataGrid.Columns>
                 </DataGrid>
-                <TextBox x:Name="textBoxDeposit" Grid.Row="1" Margin="10,15,200,15" PreviewTextInput="textBoxDeposit_PreviewTextInput" />
+                <TextBox x:Name="textBoxDeposit" Grid.Row="1" Margin="10,15,200,15" />
                 <Button x:Name="bd" Content="ОК" Margin="200,15,10,15" Grid.Row="1" Click="bd_Click" />
-                <TextBox x:Name="textBoxNonDeposit" Margin="10,15,200,15" Grid.Row="3" PreviewTextInput="textBoxNonDeposit_PreviewTextInput" />
+                <TextBox x:Name="textBoxNonDeposit" Margin="10,15,200,15" Grid.Row="3" />
                 <Button x:Name="bn" Content="ОК" Margin="200,15,10,15"  Grid.Row="3" Click="bn_Click" />
-                <TextBox x:Name="textBoxTranslation" Text="Номер счета"  Margin="10,15,160,15" Grid.Row="1" GotFocus="textBoxTranslation_GotFocus" PreviewTextInput="textBoxTranslation_PreviewTextInput" />
-                <TextBox x:Name="sum"  Margin="180,15,40,15" Grid.Row="1"  Text="Сумма" GotFocus="sum_GotFocus" PreviewTextInput="sum_PreviewTextInput" />
+                <TextBox x:Name="textBoxTranslation" Text="Номер счета"  Margin="10,15,160,15" Grid.Row="1" GotFocus="textBoxTranslation_GotFocus"  />
+                <TextBox x:Name="sum"  Margin="180,15,40,15" Grid.Row="1"  Text="Сумма" GotFocus="sum_GotFocus"  />
                 <Button x:Name="ok" Content="ОК"  Margin="300,15,3,15" Grid.Row="1" Click="ok_Click" />
             </Grid>
         </Grid>

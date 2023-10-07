@@ -55,6 +55,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AccountException.cs" />
     <Compile Include="Client.cs" />
     <Compile Include="User.cs" />
     <Compile Include="UserEventInfo.cs" />
@@ -96,6 +97,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Сreating an account\Сreating an account.csproj">
+      <Project>{c75350bf-2e12-4799-817c-a674859480e5}</Project>
+      <Name>Сreating an account</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

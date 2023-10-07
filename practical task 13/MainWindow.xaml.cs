@@ -1,6 +1,8 @@
-﻿using System;
+﻿using practical_task_13;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -12,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Сreating_an_account;
 
 namespace banking_system_prototype
 {
@@ -84,19 +87,27 @@ namespace banking_system_prototype
             }
             users.Clear();
             dataGridDeposit.ItemsSource = null;
-            users.Add(new User(user.OpenAnAccount()));
-            if (arrayDeposit[count] == 0)
+            try
             {
-                arrayDeposit[count] = users[0].depositAccount;
-                dataGridDeposit.ItemsSource = users;
+                user.Account = UserAccount.OpenAnAccount();
+                users.Add(new User(user.Account));
+                if (arrayDeposit[count] == 0)
+                {
+                    arrayDeposit[count] = users[0].depositAccount;
+                    dataGridDeposit.ItemsSource = users;
+                }
+                else
+                {
+                    users[0].depositAccount = arrayDeposit[count];
+                    dataGridDeposit.ItemsSource = users;
+                }
+                new User(listName[count].lastName, users[0].depositAccount);
+                textBlock.Text = UserEventInfo.info;
             }
-            else
+            catch (AccountException msg)
             {
-                users[0].depositAccount = arrayDeposit[count];
-                dataGridDeposit.ItemsSource = users;
+                MessageBox.Show(msg.Message);
             }
-            new User(listName[count].lastName, users[0].depositAccount);
-            textBlock.Text = UserEventInfo.info;
         }
         private void dataGridClients_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
@@ -132,19 +143,27 @@ namespace banking_system_prototype
             }
             users.Clear();
             dataGridNonDeposit.ItemsSource = null;
-            users.Add(new User(0, user.OpenAnAccount()));
-            if (arrayNonDeposit[count] == 0)
+            try
             {
-                arrayNonDeposit[count] = users[0].nonDepositAccount;
-                dataGridNonDeposit.ItemsSource = users;
+                user.Account = UserAccount.OpenAnAccount();
+                users.Add(new User(0,user.Account));
+                if (arrayNonDeposit[count] == 0)
+                {
+                    arrayNonDeposit[count] = users[0].nonDepositAccount;
+                    dataGridNonDeposit.ItemsSource = users;
+                }
+                else
+                {
+                    users[0].nonDepositAccount = arrayNonDeposit[count];
+                    dataGridNonDeposit.ItemsSource = users;
+                }
+                new User(listName[count].lastName, 0, 0, users[0].nonDepositAccount);
+                textBlock.Text = UserEventInfo.info;
             }
-            else
+            catch (AccountException msg)
             {
-                users[0].nonDepositAccount = arrayNonDeposit[count];
-                dataGridNonDeposit.ItemsSource = users;
+                MessageBox.Show(msg.Message);
             }
-            new User(listName[count].lastName, 0, 0, users[0].nonDepositAccount);
-            textBlock.Text = UserEventInfo.info;
         }
         /// <summary>
         /// Закрывает счет
@@ -222,17 +241,14 @@ namespace banking_system_prototype
         }
         private void bd_Click(object sender, RoutedEventArgs e)
         {
-            if (textBoxDeposit.Text == "")
-            {
-                MessageBox.Show("Введите сумму");
-                return;
-            }
+           
             if (arrayDeposit[count] == 0)
             {
                 MessageBox.Show("Откройте счет");
                 return;
             }
-            int moneyAddDeposit = int.Parse(textBoxDeposit.Text);
+            int moneyAddDeposit;
+            int.TryParse(textBoxDeposit.Text, out moneyAddDeposit);
             moneyD[count] += moneyAddDeposit;
             users.Clear();
             textBoxDeposit.Text = null;
@@ -246,17 +262,20 @@ namespace banking_system_prototype
         }
         private void bn_Click(object sender, RoutedEventArgs e)
         {
-            if (textBoxNonDeposit.Text == "")
-            {
-                MessageBox.Show("Введите сумму");
-                return;
-            }
             if (arrayNonDeposit[count] == 0)
             {
                 MessageBox.Show("Откройте счет");
                 return;
             }
-            int moneyNonAddDeposit = int.Parse(textBoxNonDeposit.Text);
+            int moneyNonAddDeposit;
+            try
+            {
+                moneyNonAddDeposit = int.Parse(textBoxNonDeposit.Text);
+            }
+            catch 
+            {
+                moneyNonAddDeposit = 0;
+            }
             moneyN[count] += moneyNonAddDeposit;
             users.Clear();
             textBoxNonDeposit.Text = null;
@@ -267,16 +286,6 @@ namespace banking_system_prototype
             dataGridNonDeposit.ItemsSource = users;
             new User(listName[count].lastName, users[0].nonDepositAccount, 0, 0, moneyNonAddDeposit);
             textBlock.Text = UserEventInfo.info;
-        }
-        private void textBoxDeposit_PreviewTextInput(object sender, TextCompositionEventArgs e)
-        {
-            if (!Char.IsDigit(e.Text, 0))                   /* Разарешает вводить только цифры*/
-                e.Handled = true;
-        }
-        private void textBoxNonDeposit_PreviewTextInput(object sender, TextCompositionEventArgs e)
-        {
-            if (!Char.IsDigit(e.Text, 0))
-                e.Handled = true;
         }
         /// <summary>
         /// Перевести другому клиенту
@@ -318,18 +327,10 @@ namespace banking_system_prototype
                 return;
             }
             bool w = true;
-            if (sum.Text == "" || sum.Text == "Сумма")
-            {
-                MessageBox.Show("Введите сумму");
-                return;
-            }
-            if (textBoxTranslation.Text == "" || textBoxTranslation.Text == "Номер счета")
-            {
-                MessageBox.Show("Счет не найден");
-                return;
-            }
-            ulong translation = ulong.Parse(textBoxTranslation.Text);
-            int sum1 = int.Parse(sum.Text);
+            ulong translation;
+            ulong.TryParse(textBoxTranslation.Text,out translation);
+            int sum1;
+            int.TryParse(sum.Text,out sum1);
             if (moneyD[count] < sum1)
             {
                 MessageBox.Show("Недостаточно Средств");
@@ -359,16 +360,6 @@ namespace banking_system_prototype
             dataGridDeposit.ItemsSource = users;
             new User(listName[count].lastName, users[0].depositAccount, translation, 0, sum1);
             textBlock.Text = UserEventInfo.info;
-        }
-        private void textBoxTranslation_PreviewTextInput(object sender, TextCompositionEventArgs e)
-        {
-            if (!Char.IsDigit(e.Text, 0))
-                e.Handled = true;
-        }
-        private void sum_PreviewTextInput(object sender, TextCompositionEventArgs e)
-        {
-            if (!Char.IsDigit(e.Text, 0))
-                e.Handled = true;
         }
     }
 }
